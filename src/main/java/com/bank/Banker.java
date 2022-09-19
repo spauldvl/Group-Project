@@ -88,7 +88,8 @@ public class Banker {
         String output = "";
         for (Account account : allAccounts) {
             account.compute();
-            output += account.getName() + ": " + "$" + account.getBalance() + "\n";
+            String formattedBalance = String.format("%.2f", account.getBalance());
+            output += account.getName() + ": " + "$" + formattedBalance + "\n";
 
         }
         JOptionPane.showMessageDialog(null, output);
