@@ -21,7 +21,7 @@ public class Banker {
                 account.setMaturity(term);
 
                 String strBalance = JOptionPane.showInputDialog("Enter your account balance");
-                int balance = Integer.parseInt(strBalance);
+                double balance = Double.parseDouble(strBalance);
                 account.setBalance(balance);
 
                 String strInterest = JOptionPane.showInputDialog("Enter your interest rate");
@@ -41,7 +41,7 @@ public class Banker {
                 account.setName(nameInput);
 
                 String strBalance = JOptionPane.showInputDialog("Enter your account balance");
-                int balance = Integer.parseInt(strBalance);
+                double balance = Double.parseDouble(strBalance);
                 account.setBalance(balance);
 
                 String strInterest = JOptionPane.showInputDialog("Enter your interest rate");
@@ -61,7 +61,7 @@ public class Banker {
                 account.setName(nameInput);
 
                 String strBalance = JOptionPane.showInputDialog("Enter your account balance");
-                int balance = Integer.parseInt(strBalance);
+                double balance = Double.parseDouble(strBalance);
                 account.setBalance(balance);
 
                 String strInterest = JOptionPane.showInputDialog("Enter your interest rate");

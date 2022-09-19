@@ -2,22 +2,23 @@ package com.bank;
 
 abstract class Account {
 
-    private int balance;
-    private int interest;
+    private double balance;
+    private double interest;
     private int periods;
     private String name;
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
-    public void setBalance(int inputBalance) {
+    public void setBalance(double inputBalance) {
         balance = inputBalance;
     }
-    public int getInterest() {
+    public double getInterest() {
         return interest;
     }
     public void setInterest(int inputInterest) {
-        interest = inputInterest;
+
+        interest = Double.parseDouble(String.valueOf(inputInterest)) / 100;
     }
     public int getPeriods() {
         return periods;
@@ -27,7 +28,7 @@ abstract class Account {
     }
     public void compute(){
         for(int i = 0; i < periods; i++){
-            balance += interest * balance;
+            setBalance((getInterest() * getBalance()) + getBalance());
         }
     }
     public String getName(){
