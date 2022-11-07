@@ -3,7 +3,21 @@ package com.bank;
 import javax.swing.*;
 import java.util.ArrayList;
 public class Banker {
+    public static final String CHECKING = "Checking";
+    public static final String SAVINGS = "Savings";
+    public static final String CERTIFICATE_OF_DEPOSIT = "Certificate of Deposit";
+
      private static ArrayList<Account> allAccounts = new ArrayList<>();
+     private static Banker banker = null;
+     private Banker(){
+
+     }
+    public static Banker getInstance() {
+        if (banker == null) {
+            banker = new Banker();
+        }
+        return banker;
+    }
 
     public static void promptUser(){
 
@@ -96,8 +110,30 @@ public class Banker {
 
     }
     public static void main (String[] args) {
+        Banker banker1 = getInstance();
 
         promptUser();
         displayOutput();
+    }
+
+    /**
+     * Simple factory method to create and return a subclass of type Vehicle.
+     *
+     * @param selectedAccount A string representing the vehicle we want to create.
+     * @return the created vehicle.
+     */
+    public Account createAccount (final Object selectedAccount) {
+        Account account = null;
+        if (selectedAccount.toString().equals(CHECKING)) {
+            account = new Checking();
+        } else if (selectedAccount.toString().equals(SAVINGS)) {
+            Savings savings = new Savings();
+            account = savings;
+        } else if (selectedAccount.toString().equals(CERTIFICATE_OF_DEPOSIT)) {
+            CertificateOfDeposit certificateOfDeposit = new CertificateOfDeposit();
+            int term = certificateOfDeposit.getMaturity();
+            account = certificateOfDeposit;
+        }
+        return account;
     }
 }

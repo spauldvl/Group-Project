@@ -1,11 +1,12 @@
 package com.bank;
 
-abstract class Account {
+public abstract class Account {
 
     private double balance;
     private double interest;
     private int periods;
     private String name;
+    private int term;
 
     public double getBalance() {
         return balance;
@@ -36,6 +37,10 @@ abstract class Account {
     }
     public void setName(String inputName){
         name = inputName;
+    }
+    @Override
+    public String toString() {
+        return " Name: " + getName() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods();
     }
 
 }
