@@ -1,8 +1,17 @@
 package com.bank;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Vector;
 
 public class BankerForm {
@@ -27,14 +36,18 @@ public class BankerForm {
     private JTextField txtName;
     private JTextField txtTerm;
     private JLabel termLable;
+    private JButton openFileButton;
     private JCheckBox termCheckBox;
     private Vector<Account> allAccounts = new Vector<>();
+    private Account account;
+    private static final Logger logger = LogManager.getLogger("accounts");
 
     public BankerForm() {
 
         initializeAccountTypeComboBox();
 
         listAccounts.setListData(allAccounts);
+        AccountReader.readAccounts();
 
         createButton.addActionListener(new ActionListener() {
             @Override
@@ -98,6 +111,29 @@ public class BankerForm {
                 }
 
             }
+        });
+        openFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+                    try  {
+                        Reader reader = Files.newBufferedReader(Paths.get("accounts.json"));
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.registerTypeAdapter(Account.class, new AccountSerializer());
+                        Gson gson = gsonBuilder.create();
+                        Vector<Account> inAccounts = gson.fromJson(reader, new TypeToken<Vector<Account>>(){}.getType());
+                        allAccounts.addAll(inAccounts);
+                        listAccounts.updateUI();
+                        reader.close();
+                        System.out.println(allAccounts);
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                        JOptionPane.showMessageDialog(null, "Unable to open file");
+                    }
+
+                }
+
         });
     }
     private void initializeAccountTypeComboBox(){

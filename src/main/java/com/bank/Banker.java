@@ -2,6 +2,9 @@ package com.bank;
 
 import javax.swing.*;
 import java.util.ArrayList;
+
+import static com.bank.AccountReader.readAccounts;
+
 public class Banker {
     public static final String CHECKING = "Checking";
     public static final String SAVINGS = "Savings";
@@ -114,6 +117,7 @@ public class Banker {
 
         promptUser();
         displayOutput();
+        readAccounts();
     }
 
     /**

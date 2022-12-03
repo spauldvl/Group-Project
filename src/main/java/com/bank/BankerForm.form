@@ -12,6 +12,12 @@
         <properties/>
         <border type="none"/>
         <children>
+          <component id="625bd" class="javax.swing.JButton" binding="openFileButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Open File"/>
+            </properties>
+          </component>
           <component id="a976b" class="javax.swing.JButton" binding="createButton" default-binding="true">
             <constraints/>
             <properties>

@@ -1,31 +1,32 @@
 package com.bank;
 
+import netscape.javascript.JSObject;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+
 public class AccountReader {
 
     private static Queue<Account> allAccountsQueue = new PriorityQueue<>();
     private static ArrayList<Account> allAccounts = new ArrayList<>();
 
-    public static void main(String[] args){
-        createAccount();
-        //
-    }
-
-    public static void createAccount(){
-        Path accountFilePath = Paths.get("accounts.txt");
+    public static void readAccounts(){
+        Path accountFilePath = Paths.get("accounts.json");
         try{
             List<String> accountLines = Files.readAllLines(accountFilePath);
             for (String accountDetail: accountLines)
             {
+                System.out.println(accountDetail);
                 String[] accountArray = accountDetail.split(", ");
                 if (accountArray.length <= 5)
                 {
+                    System.out.println("here");
                     String accountType = accountArray[0];
+                    System.out.println(accountType);
                     if (accountType.equals("CertificateOfDeposit"))
                     {
                         String strAccountTerm = accountArray[1];
@@ -86,6 +87,9 @@ public class AccountReader {
                     }
                     sort();
                     insertToQueue();
+                    for (Account account : allAccounts){
+                        System.out.println(account);
+                    }
 
                 }
             }

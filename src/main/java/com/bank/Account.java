@@ -6,6 +6,7 @@ public abstract class Account {
     private double interest;
     private int periods;
     private String name;
+    private int accountNumber;
     private int term;
 
     public double getBalance() {
