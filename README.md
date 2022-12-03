@@ -16,6 +16,7 @@ Fulfill all of your banking needs with the Banker program! With this program you
 
 ## Class Diagram
 
+![BankerClassDiagram](https://user-images.githubusercontent.com/113064920/205458161-b3fece66-a4b4-4b97-b377-4c45c87d8db5.png)
 
 ## Class Diagram Description
 
