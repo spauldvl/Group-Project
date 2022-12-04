@@ -2,7 +2,7 @@ package com.bank;
 
 import java.io.Serializable;
 
-public abstract class Account implements Serializable {
+public abstract class Account implements Serializable, Comparable<Account> {
 
     private double balance;
     private double interest;
@@ -40,6 +40,10 @@ public abstract class Account implements Serializable {
             setBalance((getInterest() * getBalance()) + getBalance());
         }
     }
+    public void withdraw(double amount){
+        setBalance(getBalance() - amount);
+
+    }
     public String getName(){
         return name;
     }
@@ -48,7 +52,15 @@ public abstract class Account implements Serializable {
     }
     @Override
     public String toString() {
-        return " Name: " + getName() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods();
+        String message = "Account Number: " + getAccountNumber() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods();
+        if (getName() != null){
+            message = "Name: " + getName() + " " + message;
+            System.out.println("to string" + getName());
+        }
+        return message;
+    }
+    public int compareTo(Account account){
+        return Double.compare(getInterest(), account.getInterest());
     }
 
 }
