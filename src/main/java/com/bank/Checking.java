@@ -1,9 +1,10 @@
 package com.bank;
 
+import java.io.Serializable;
+
 public class Checking extends Account {
 
     final int FEE = 5;
-    private int balance;
 
 
     public void compute(){

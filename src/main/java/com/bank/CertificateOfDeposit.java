@@ -2,7 +2,7 @@ package com.bank;
 
 public class CertificateOfDeposit extends Account {
 
-    private int term;
+    private static int term;
 
 
     public int getMaturity() {

@@ -12,7 +12,11 @@ import java.awt.event.ActionListener;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class BankerForm {
     private JPanel panelMain;
@@ -37,16 +41,22 @@ public class BankerForm {
     private JTextField txtTerm;
     private JLabel termLable;
     private JButton openFileButton;
+    private JLabel lblAccountNum;
+    private JTextField txtAccountNum;
     private JCheckBox termCheckBox;
-    private Vector<Account> allAccounts = new Vector<>();
+    private HashMap<Integer, Account> allAccounts = new HashMap();
     private Account account;
     private static final Logger logger = LogManager.getLogger("accounts");
+    private Collection<Account> values = allAccounts.values();
+    private Vector<Account>  array = new Vector<>(values);
 
     public BankerForm() {
 
         initializeAccountTypeComboBox();
 
-        listAccounts.setListData(allAccounts);
+
+
+        listAccounts.setListData(new Vector<>(allAccounts.values()));
         AccountReader.readAccounts();
 
         createButton.addActionListener(new ActionListener() {
@@ -61,9 +71,10 @@ public class BankerForm {
                 String strPeriods = txtPeriods.getText();
                 int periods = Integer.parseInt(strPeriods);
 
+                String strAccountNum = txtAccountNum.getText();
+                int accountNum = Integer.parseInt(strAccountNum);
+
                 String name = txtName.getText();
-
-
 
                 String type = accountTypecmbx.getSelectedItem().toString();
                 Account account = Banker.getInstance().createAccount(type);
@@ -74,6 +85,7 @@ public class BankerForm {
                 account.setInterest(interest);
                 account.setPeriods(periods);
                 account.setName(name);
+                account.setAccountNumber(accountNum);
 
                 if (accountTypecmbx.getSelectedItem().toString().equals(Banker.CERTIFICATE_OF_DEPOSIT)){
                     if (account instanceof CertificateOfDeposit){
@@ -85,7 +97,7 @@ public class BankerForm {
                 }
 
 
-                allAccounts.add(account);
+                allAccounts.put(accountNum, account);
                 listAccounts.updateUI();
 
             }
@@ -94,7 +106,7 @@ public class BankerForm {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                allAccounts.stream().forEach(account -> {
+                allAccounts.values().stream().forEach(account -> {
                     account.compute();
                 });
                 listAccounts.updateUI();
@@ -123,10 +135,18 @@ public class BankerForm {
                         gsonBuilder.registerTypeAdapter(Account.class, new AccountSerializer());
                         Gson gson = gsonBuilder.create();
                         Vector<Account> inAccounts = gson.fromJson(reader, new TypeToken<Vector<Account>>(){}.getType());
-                        allAccounts.addAll(inAccounts);
+                        for (int i = 0 ; i < inAccounts.size() ; i++){
+                            inAccounts.get(i).setAccountNumber(i + 1);
+                            allAccounts.put(i,inAccounts.get(i));
+                        }
+
                         listAccounts.updateUI();
                         reader.close();
-                        System.out.println(allAccounts);
+
+
+                        //System.out.println(listAccounts.get);
+                        //System.out.println(allAccounts);
+                        System.out.println(new Vector<>(allAccounts.values()));
                     } catch (Exception ex) {
                         logger.error(ex);
                         JOptionPane.showMessageDialog(null, "Unable to open file");

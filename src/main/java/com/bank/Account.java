@@ -1,14 +1,21 @@
 package com.bank;
 
-public abstract class Account {
+import java.io.Serializable;
+
+public abstract class Account implements Serializable {
 
     private double balance;
     private double interest;
     private int periods;
     private String name;
     private int accountNumber;
-    private int term;
 
+    public int getAccountNumber(){
+        return accountNumber;
+    }
+    public void setAccountNumber(int inputNumber){
+        accountNumber = inputNumber;
+    }
     public double getBalance() {
         return balance;
     }
