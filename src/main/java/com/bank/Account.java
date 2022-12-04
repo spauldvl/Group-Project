@@ -25,7 +25,7 @@ public abstract class Account implements Serializable, Comparable<Account> {
     public double getInterest() {
         return interest;
     }
-    public void setInterest(int inputInterest) {
+    public void setInterest(double inputInterest) {
 
         interest = Double.parseDouble(String.valueOf(inputInterest)) / 100;
     }
@@ -42,7 +42,6 @@ public abstract class Account implements Serializable, Comparable<Account> {
     }
     public void withdraw(double amount){
         setBalance(getBalance() - amount);
-
     }
     public String getName(){
         return name;

@@ -12,6 +12,12 @@
         <properties/>
         <border type="none"/>
         <children>
+          <component id="cb7b7" class="javax.swing.JButton" binding="btnReport">
+            <constraints/>
+            <properties>
+              <text value="Report"/>
+            </properties>
+          </component>
           <component id="1fd2b" class="javax.swing.JButton" binding="btnWithdraw">
             <constraints/>
             <properties>

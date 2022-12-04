@@ -42,6 +42,7 @@ public class BankerForm {
     private JLabel withdrawButton;
     private JTextField txtWithdraw;
     private JButton btnWithdraw;
+    private JButton btnReport;
     private JCheckBox termCheckBox;
     private HashMap<Integer, Account> allAccounts = new HashMap();
     private Account account;
@@ -68,7 +69,7 @@ public class BankerForm {
                 double balance = Double.parseDouble(strBalance);
 
                 String strInterest = txtInterest.getText();
-                int interest = Integer.parseInt(strInterest);
+                double interest = Double.parseDouble(strInterest);
 
                 String strPeriods = txtPeriods.getText();
                 int periods = Integer.parseInt(strPeriods);
@@ -108,8 +109,11 @@ public class BankerForm {
         computeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                double initialBalanceSum = 0;
+                double finalBalanceSum = 0;
 
                 allAccounts.values().stream().forEach(account -> {
+
                     account.compute();
                 });
                 listAccounts.updateUI();
@@ -140,7 +144,9 @@ public class BankerForm {
                         Gson gson = gsonBuilder.create();
                         Vector<Account> inAccounts = gson.fromJson(reader, new TypeToken<Vector<Account>>(){}.getType());
                         for (int i = 0 ; i < inAccounts.size() ; i++){
-                            inAccounts.get(i).setAccountNumber(i + 1);
+                            Account account = inAccounts.get(i);
+                            account.setAccountNumber(i + 1);
+                            account.setInterest(account.getInterest());
                             //allAccounts.put(i,inAccounts.get(i));
                             accountVector.add(inAccounts.get(i));
 
@@ -182,6 +188,12 @@ public class BankerForm {
 
             }
         });
+        btnReport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
     private void initializeAccountTypeComboBox(){
         DefaultComboBoxModel<String> accountTypesModel = new DefaultComboBoxModel<>();
@@ -208,6 +220,15 @@ public class BankerForm {
 
         //accountVector.sort(Comparator.comparingDouble(Account::getInterest));
     }
+    private double interestTotal(int periods){
+        //loop through acc vector
+        //for (Account : allAccounts)
+            // bal + int*bal
+            // loop through period #
+            // subtract initial bal - final bal = int earned over period
+        }
+        //return sum;
+
     public static Account fetchNextQualifiedAccount() {
         return allAccountsQueue.peek();
     }
