@@ -43,6 +43,7 @@ public abstract class Account implements Serializable, Comparable<Account> {
     public void withdraw(double amount){
         setBalance(getBalance() - amount);
     }
+
     public String getName(){
         return name;
     }

@@ -191,9 +191,28 @@ public class BankerForm {
         btnReport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String strPeriods = txtPeriods.getText();
+                int periods = Integer.parseInt(strPeriods);
+                totalInterestEarned(periods);
 
             }
         });
+    }
+    public void totalInterestEarned(int period)
+    {
+        int totalInterest = 0;
+        for (Account account : accountVector)
+        {
+            double initialBalance = account.getBalance();
+            double accountEarnedInterest = 0;
+            double updatedBalance = account.getBalance();
+            for (int i=0 ; i < period ; i++){
+                updatedBalance = account.getInterest() * updatedBalance + updatedBalance;
+            }
+            accountEarnedInterest = updatedBalance - initialBalance;
+            totalInterest += accountEarnedInterest;
+        }
+        JOptionPane.showMessageDialog(null,"Total interest earned: " + totalInterest);
     }
     private void initializeAccountTypeComboBox(){
         DefaultComboBoxModel<String> accountTypesModel = new DefaultComboBoxModel<>();
@@ -220,14 +239,7 @@ public class BankerForm {
 
         //accountVector.sort(Comparator.comparingDouble(Account::getInterest));
     }
-    private double interestTotal(int periods){
-        //loop through acc vector
-        //for (Account : allAccounts)
-            // bal + int*bal
-            // loop through period #
-            // subtract initial bal - final bal = int earned over period
-        }
-        //return sum;
+
 
     public static Account fetchNextQualifiedAccount() {
         return allAccountsQueue.peek();
