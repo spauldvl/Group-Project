@@ -1,9 +1,18 @@
 package com.bank;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class BankerForm {
     private JPanel panelMain;
@@ -27,14 +36,31 @@ public class BankerForm {
     private JTextField txtName;
     private JTextField txtTerm;
     private JLabel termLable;
+    private JButton openFileButton;
+    private JLabel lblAccountNum;
+    private JTextField txtAccountNum;
+    private JLabel withdrawButton;
+    private JTextField txtWithdraw;
+    private JButton btnWithdraw;
+    private JButton btnReport;
     private JCheckBox termCheckBox;
-    private Vector<Account> allAccounts = new Vector<>();
+    private HashMap<Integer, Account> allAccounts = new HashMap();
+    private Account account;
+    private static final Logger logger = LogManager.getLogger("accounts");
+    private Collection<Account> values = allAccounts.values();
+    private Vector<Account>  array = new Vector<>(values);
+    private static Queue<Account> allAccountsQueue = new PriorityQueue<>();
+    private Vector<Account> accountVector = new Vector<>(allAccounts.values());
 
     public BankerForm() {
 
         initializeAccountTypeComboBox();
 
-        listAccounts.setListData(allAccounts);
+
+
+        listAccounts.setListData(new Vector<>(allAccounts.values()));
+        // jScrollPanel.setViewportView(listAccounts)
+        AccountReader.readAccounts();
 
         createButton.addActionListener(new ActionListener() {
             @Override
@@ -43,14 +69,15 @@ public class BankerForm {
                 double balance = Double.parseDouble(strBalance);
 
                 String strInterest = txtInterest.getText();
-                int interest = Integer.parseInt(strInterest);
+                double interest = Double.parseDouble(strInterest);
 
                 String strPeriods = txtPeriods.getText();
                 int periods = Integer.parseInt(strPeriods);
 
+                String strAccountNum = txtAccountNum.getText();
+                int accountNum = Integer.parseInt(strAccountNum);
+
                 String name = txtName.getText();
-
-
 
                 String type = accountTypecmbx.getSelectedItem().toString();
                 Account account = Banker.getInstance().createAccount(type);
@@ -61,6 +88,7 @@ public class BankerForm {
                 account.setInterest(interest);
                 account.setPeriods(periods);
                 account.setName(name);
+                account.setAccountNumber(accountNum);
 
                 if (accountTypecmbx.getSelectedItem().toString().equals(Banker.CERTIFICATE_OF_DEPOSIT)){
                     if (account instanceof CertificateOfDeposit){
@@ -72,16 +100,20 @@ public class BankerForm {
                 }
 
 
-                allAccounts.add(account);
-                listAccounts.updateUI();
+                allAccounts.put(accountNum, account);
+                listAccounts.setListData(new Vector<>(allAccounts.values()));
+                System.out.println("create " + allAccounts.values());
 
             }
         });
         computeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                double initialBalanceSum = 0;
+                double finalBalanceSum = 0;
 
-                allAccounts.stream().forEach(account -> {
+                allAccounts.values().stream().forEach(account -> {
+
                     account.compute();
                 });
                 listAccounts.updateUI();
@@ -99,6 +131,69 @@ public class BankerForm {
 
             }
         });
+        openFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+
+                    try  {
+                        Reader reader = Files.newBufferedReader(Paths.get("accounts.json"));
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.registerTypeAdapter(Account.class, new AccountSerializer());
+                        Gson gson = gsonBuilder.create();
+                        Vector<Account> inAccounts = gson.fromJson(reader, new TypeToken<Vector<Account>>(){}.getType());
+                        for (int i = 0 ; i < inAccounts.size() ; i++){
+                            Account account = inAccounts.get(i);
+                            account.setAccountNumber(i + 1);
+                            account.setInterest(account.getInterest());
+                            //allAccounts.put(i,inAccounts.get(i));
+                            accountVector.add(inAccounts.get(i));
+
+                        }
+                        sort();
+                        insertToQueue();
+
+                        listAccounts.setListData(new Vector<>(allAccounts.values()));
+                        reader.close();
+
+
+                        //System.out.println(listAccounts.get);
+                        //System.out.println(allAccounts);
+                        System.out.println(new Vector<>(allAccounts.values()));
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                        JOptionPane.showMessageDialog(null, "Unable to open file");
+                    }
+
+                }
+
+        });
+        btnWithdraw.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String strWithdraw = txtWithdraw.getText();
+                double withdraw = Double.parseDouble(strWithdraw);
+                if (fetchNextQualifiedAccount() == null){
+                    insertToQueue();
+                }
+                fetchNextQualifiedAccount().withdraw(withdraw);
+                try {
+                    removeAccount(fetchNextQualifiedAccount());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                listAccounts.setListData(new Vector<>(allAccounts.values()));
+
+
+            }
+        });
+        btnReport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
     private void initializeAccountTypeComboBox(){
         DefaultComboBoxModel<String> accountTypesModel = new DefaultComboBoxModel<>();
@@ -107,6 +202,42 @@ public class BankerForm {
         accountTypesModel.addElement(Banker.CERTIFICATE_OF_DEPOSIT);
         accountTypecmbx.setModel(accountTypesModel);
 
+    }
+    private void insertToQueue(){
+        int i = 1;
+        for (Account account : accountVector){
+            allAccountsQueue.offer(account);
+            if (account.getAccountNumber() != -1){
+                allAccounts.put(account.getAccountNumber(),account);
+            }else {
+                allAccounts.put(i, account);
+            }
+            i++;
+        }
+    }
+    private void sort(){
+        Collections.sort(accountVector);
+
+        //accountVector.sort(Comparator.comparingDouble(Account::getInterest));
+    }
+    private double interestTotal(int periods){
+        //loop through acc vector
+        //for (Account : allAccounts)
+            // bal + int*bal
+            // loop through period #
+            // subtract initial bal - final bal = int earned over period
+        }
+        //return sum;
+
+    public static Account fetchNextQualifiedAccount() {
+        return allAccountsQueue.peek();
+    }
+
+    public static void removeAccount(Account inAccount) throws Exception {
+        Account nextAccount = allAccountsQueue.poll();
+        if (!nextAccount.equals(inAccount)) {
+            throw new Exception ("Account is not in queue");
+        }
     }
 
     public static void main(String[] args) {

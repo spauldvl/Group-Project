@@ -1,13 +1,21 @@
 package com.bank;
 
-public abstract class Account {
+import java.io.Serializable;
+
+public abstract class Account implements Serializable, Comparable<Account> {
 
     private double balance;
     private double interest;
     private int periods;
     private String name;
-    private int term;
+    private int accountNumber;
 
+    public int getAccountNumber(){
+        return accountNumber;
+    }
+    public void setAccountNumber(int inputNumber){
+        accountNumber = inputNumber;
+    }
     public double getBalance() {
         return balance;
     }
@@ -17,7 +25,7 @@ public abstract class Account {
     public double getInterest() {
         return interest;
     }
-    public void setInterest(int inputInterest) {
+    public void setInterest(double inputInterest) {
 
         interest = Double.parseDouble(String.valueOf(inputInterest)) / 100;
     }
@@ -32,6 +40,9 @@ public abstract class Account {
             setBalance((getInterest() * getBalance()) + getBalance());
         }
     }
+    public void withdraw(double amount){
+        setBalance(getBalance() - amount);
+    }
     public String getName(){
         return name;
     }
@@ -40,7 +51,15 @@ public abstract class Account {
     }
     @Override
     public String toString() {
-        return " Name: " + getName() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods();
+        String message = "Account Number: " + getAccountNumber() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods();
+        if (getName() != null){
+            message = "Name: " + getName() + " " + message;
+            System.out.println("to string" + getName());
+        }
+        return message;
+    }
+    public int compareTo(Account account){
+        return Double.compare(getInterest(), account.getInterest());
     }
 
 }

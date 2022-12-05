@@ -2,7 +2,7 @@ package com.bank;
 
 public class CertificateOfDeposit extends Account {
 
-    private int term;
+    private static int term;
 
 
     public int getMaturity() {
@@ -14,7 +14,13 @@ public class CertificateOfDeposit extends Account {
 
     @Override
     public String toString() {
-        return " Name: " + getName() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods() + " Term: " + getMaturity();
+
+        String message = "Account Number: " + getAccountNumber() + " Balance: " + getBalance() + " Interest: " + getInterest() + " Periods: " + getPeriods() + " Term: " + getMaturity();
+        if (getName() != null){
+            message = "Name: " + getName() + " " + message;
+        }
+        return message;
+
     }
 
 
