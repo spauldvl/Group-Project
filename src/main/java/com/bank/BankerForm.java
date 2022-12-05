@@ -44,13 +44,13 @@ public class BankerForm {
     private JButton btnWithdraw;
     private JButton btnReport;
     private JCheckBox termCheckBox;
-    private HashMap<Integer, Account> allAccounts = new HashMap();
-    private Account account;
+    private final HashMap<Integer, Account> allAccounts = new HashMap();
+    // private Account account;
     private static final Logger logger = LogManager.getLogger("accounts");
-    private Collection<Account> values = allAccounts.values();
-    private Vector<Account>  array = new Vector<>(values);
-    private static Queue<Account> allAccountsQueue = new PriorityQueue<>();
-    private Vector<Account> accountVector = new Vector<>(allAccounts.values());
+    private final Collection<Account> values = allAccounts.values();
+    private final Vector<Account>  array = new Vector<>(values);
+    private static final Queue<Account> allAccountsQueue = new PriorityQueue<>();
+    private final Vector<Account> accountVector = new Vector<>(allAccounts.values());
 
     public BankerForm() {
 
@@ -109,8 +109,8 @@ public class BankerForm {
         computeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double initialBalanceSum = 0;
-                double finalBalanceSum = 0;
+                //double initialBalanceSum = 0;
+                //double finalBalanceSum = 0;
 
                 allAccounts.values().stream().forEach(account -> {
 
